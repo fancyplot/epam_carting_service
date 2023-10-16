@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CartingService.Domain\CartingService.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\V1\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteDB" Version="5.0.17" />
+  </ItemGroup>
+
+</Project>
