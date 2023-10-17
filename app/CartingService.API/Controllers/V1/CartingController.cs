@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,10 +11,12 @@ namespace CartingService.API.Controllers.V1
     public partial class CartingController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public CartingController(IMediator mediator)
+        public CartingController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         // GET api/<CartingController>/5
@@ -21,12 +24,6 @@ namespace CartingService.API.Controllers.V1
         public string Get(int id)
         {
             return "value";
-        }
-
-        // POST api/<CartingController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
         }
 
         // PUT api/<CartingController>/5

@@ -10,6 +10,11 @@ public class AutoMapperProfileInfrastructure : Profile
     public AutoMapperProfileInfrastructure()
     {
         CreateMap<CartEntity, Cart>();
-        CreateMap<CartEntityDto, CartEntity>();
+        CreateMap<CartEntityDto, CartEntity>()
+            .ForMember(t => t.Id, opt => opt.MapFrom(src => src.CartId));
+        CreateMap<Cart, CartEntity>();
+        CreateMap<CartEntity, CartEntityDto>()
+            .ForMember(t => t.CartId, opt => opt.MapFrom(src => src.Id));
+            ;
     }
 }

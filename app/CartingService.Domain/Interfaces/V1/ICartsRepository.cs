@@ -5,4 +5,6 @@ namespace CartingService.Domain.Interfaces.V1;
 public interface ICartsRepository
 {
     Task<IEnumerable<Cart>> GetAsync();
+
+    Task<Cart> CreateAsync(Cart cart);
 }

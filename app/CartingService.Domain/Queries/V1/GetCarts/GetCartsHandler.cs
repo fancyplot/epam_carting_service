@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CartingService.Domain.Interfaces.V1;
+﻿using CartingService.Domain.Interfaces.V1;
 using CartingService.Domain.Models.V1;
 using MediatR;
 
