@@ -19,6 +19,6 @@ public class CreateCartHandler : IRequestHandler<CreateCartCommand, Cart>
     public async Task<Cart> Handle(CreateCartCommand request, CancellationToken cancellationToken)
     {
         var cart = _mapper.Map<Cart>(request);
-        return await _cartsRepository.CreateAsync(cart);
+        return await _cartsRepository.CreateAsync(cart, cancellationToken);
     }
 }

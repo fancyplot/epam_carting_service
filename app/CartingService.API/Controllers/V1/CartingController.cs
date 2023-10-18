@@ -31,11 +31,5 @@ namespace CartingService.API.Controllers.V1
         public void Put(int id, [FromBody] string value)
         {
         }
-
-        // DELETE api/<CartingController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

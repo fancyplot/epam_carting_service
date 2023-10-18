@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CartingService.Domain.Commands.V1.CreateCart;
+using CartingService.Domain.Commands.V1.DeleteCart;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CartingService.API.Controllers.V1;
@@ -24,6 +25,24 @@ public partial class CartingController
             return Created(location, new CreatedResult(location, result));
         }
         catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await _mediator.Send(new DeleteCartCommand()
+            {
+                Id = id
+            });
+
+            return Ok();
+        }
+        catch (KeyNotFoundException ex)
         {
             return BadRequest(ex.Message);
         }

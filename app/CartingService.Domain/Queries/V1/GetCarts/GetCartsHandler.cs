@@ -15,6 +15,6 @@ public class GetCartsHandler : IRequestHandler<GetCartsQuery, IEnumerable<Cart>>
 
     public async Task<IEnumerable<Cart>> Handle(GetCartsQuery request, CancellationToken cancellationToken)
     {
-        return await _cartsRepository.GetAsync();
+        return await _cartsRepository.GetAsync(cancellationToken);
     }
 }
