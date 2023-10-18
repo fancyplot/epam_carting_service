@@ -1,4 +1,4 @@
-using CartingService.API.AutoMapper;
+using CartingService.Domain.AutoMapper;
 using CartingService.Domain.Interfaces.V1;
 using CartingService.Domain.Models.V1;
 using CartingService.Infrastructure.AutoMapper;
@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Cart>());
-builder.Services.AddAutoMapper(typeof(AutoMapperProfileInfrastructure), typeof(AutoMapperProfileApi));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfileInfrastructure), typeof(AutoMapperProfileDomain));
 builder.Services.AddScoped<ICartsRepository, CartsRepository>();
 
 var app = builder.Build();

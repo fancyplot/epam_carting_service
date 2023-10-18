@@ -2,11 +2,11 @@
 using CartingService.Domain.Commands.V1.CreateCart;
 using CartingService.Domain.Models.V1;
 
-namespace CartingService.API.AutoMapper;
+namespace CartingService.Domain.AutoMapper;
 
-public class AutoMapperProfileApi : Profile
+public class AutoMapperProfileDomain : Profile
 {
-    public AutoMapperProfileApi()
+    public AutoMapperProfileDomain()
     {
         CreateMap<CreateCartCommand, Cart>();
     }
