@@ -4,9 +4,11 @@ namespace CartingService.Domain.Interfaces.V1;
 
 public interface ICartsRepository
 {
-    Task<IEnumerable<Cart>> GetAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<Cart>> GetAllAsync(CancellationToken cancellationToken);
 
-    Task<Cart> CreateAsync(Cart cart, CancellationToken cancellationToken);
+    Task<Cart> GetAsync(int cartId, CancellationToken cancellationToken);
+
+    Task CreateAsync(Cart cart, CancellationToken cancellationToken);
 
     Task DeleteAsync(int id, CancellationToken cancellationToken);
 }

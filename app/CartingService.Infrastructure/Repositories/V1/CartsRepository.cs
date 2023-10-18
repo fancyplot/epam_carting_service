@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CartingService.Domain.Interfaces.V1;
 using CartingService.Domain.Models.V1;
-using CartingService.Infrastructure.Dto.V1;
 using CartingService.Infrastructure.Models.V1;
 using LiteDB;
 using Microsoft.Extensions.Configuration;
@@ -20,49 +19,41 @@ public class CartsRepository : ICartsRepository
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
-    public Task<IEnumerable<Cart>> GetAsync(CancellationToken cancellationToken)
+    public Task<IEnumerable<Cart>> GetAllAsync(CancellationToken cancellationToken)
     {
         using var db = new LiteDatabase(_configuration["Database"]);
-        var entitiesDto = db.GetCollection<CartEntityDto>(CollectionName).FindAll().ToList();
-        var entities = _mapper.Map<IEnumerable<CartEntity>>(entitiesDto);
-            
+        var entities = db.GetCollection<CartEntity>(CollectionName).FindAll().ToList();
+        
         return Task.FromResult(_mapper.Map<IEnumerable<Cart>>(entities));
     }
 
-    public Task<Cart> CreateAsync(Cart cart, CancellationToken cancellationToken)
+    public Task<Cart> GetAsync(int cartId, CancellationToken cancellationToken)
     {
-        using (var db = new LiteDatabase(_configuration["Database"]))
-        {
-            var entity = _mapper.Map<CartEntity>(cart);
+        using var db = new LiteDatabase(_configuration["Database"]);
+        var entities = db.GetCollection<CartEntity>(CollectionName).FindAll().ToList();
+        var existingItem = entities.FirstOrDefault(x => x.CartId == cartId);
 
-            var entitiesDto = db.GetCollection<CartEntityDto>(CollectionName);
-            var existingItem = entitiesDto.FindAll().FirstOrDefault(x => x.CartId == entity.Id);
-            if (existingItem == null)
-            {
-                var mappedEntity = _mapper.Map<CartEntityDto>(entity);
-                entitiesDto.Insert(mappedEntity);
-            }
-            else
-                throw new ArgumentException($"Cart with id {existingItem.CartId} already exists");
+        return Task.FromResult(_mapper.Map<Cart>(existingItem));
+    }
 
-            var createdItem = entitiesDto.FindAll().FirstOrDefault(x => x.CartId == entity.Id);
-            var createdEntity = _mapper.Map<CartEntity>(createdItem);
+    public Task CreateAsync(Cart cart, CancellationToken cancellationToken)
+    {
+        using var db = new LiteDatabase(_configuration["Database"]);
+         
+        var entity = _mapper.Map<CartEntity>(cart);
 
-            return Task.FromResult(_mapper.Map<Cart>(createdEntity));
-        }
-
+       var entities = db.GetCollection<CartEntity>(CollectionName);
+       entities.Insert(entity);
+       
+       return Task.CompletedTask;
     }
 
     public Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
         using var db = new LiteDatabase(_configuration["Database"]);
-        var entitiesDto = db.GetCollection<CartEntityDto>(CollectionName);
-        var existingItem = entitiesDto.FindAll().FirstOrDefault(x => x.CartId == id);
+        var entities = db.GetCollection<CartEntity>(CollectionName);
 
-        if (existingItem == null)
-            throw new KeyNotFoundException();
-
-        entitiesDto.DeleteMany(t => t.CartId == id);
+        entities.DeleteMany(t => t.CartId == id);
 
         return Task.CompletedTask;
     }

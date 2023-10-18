@@ -19,6 +19,17 @@ public class CreateCartHandler : IRequestHandler<CreateCartCommand, Cart>
     public async Task<Cart> Handle(CreateCartCommand request, CancellationToken cancellationToken)
     {
         var cart = _mapper.Map<Cart>(request);
-        return await _cartsRepository.CreateAsync(cart, cancellationToken);
+        var existingCart = await _cartsRepository.GetAsync(request.Id, cancellationToken);
+        if (existingCart != null)
+            throw new ArgumentException($"Cart with id {request.Id} already exists");
+
+        await _cartsRepository.CreateAsync(cart, cancellationToken);
+
+        var createdCart = await _cartsRepository.GetAsync(request.Id, cancellationToken);
+
+        if (createdCart == null)
+            throw new Exception($"Cart with id {request.Id} was not created");
+
+        return createdCart;
     }
 }

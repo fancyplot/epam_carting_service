@@ -6,9 +6,9 @@ namespace CartingService.API.Controllers.V1;
 public partial class CartingController
 {
     [HttpGet]
-    public async Task<IActionResult> GetAsync()
+    public async Task<IActionResult> GetAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(new GetCartsQuery());
+        var result = await _mediator.Send(new GetCartsQuery(), cancellationToken);
 
         if (!result.Any())
             return NoContent();
