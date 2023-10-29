@@ -6,12 +6,12 @@ namespace CartingService.API.Controllers.V1
 {
     [Route("v1/[controller]")]
     [ApiController]
-    public partial class CartingController : ControllerBase
+    public partial class CartsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public CartingController(IMediator mediator, IMapper mapper)
+        public CartsController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

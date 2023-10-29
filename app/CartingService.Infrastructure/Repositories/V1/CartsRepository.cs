@@ -27,33 +27,73 @@ public class CartsRepository : ICartsRepository
         return Task.FromResult(_mapper.Map<IEnumerable<Cart>>(entities));
     }
 
-    public Task<Cart> GetAsync(int cartId, CancellationToken cancellationToken)
+    public Task<Cart> GetCartAsync(string cartId, CancellationToken cancellationToken)
     {
         using var db = new LiteDatabase(_configuration["Database"]);
-        var entities = db.GetCollection<CartEntity>(CollectionName).FindAll().ToList();
-        var existingItem = entities.FirstOrDefault(x => x.CartId == cartId);
+        var existingCart = db.GetCollection<CartEntity>(CollectionName)
+            .Include(t => t.CartItems)
+            .FindOne(x => x.Id == cartId);
 
-        return Task.FromResult(_mapper.Map<Cart>(existingItem));
+        return Task.FromResult(_mapper.Map<Cart>(existingCart));
     }
 
-    public Task CreateAsync(Cart cart, CancellationToken cancellationToken)
+    public Task<CartItem> GetCartItemAsync(string cartId, int cartItemId, CancellationToken cancellationToken)
     {
         using var db = new LiteDatabase(_configuration["Database"]);
-         
-        var entity = _mapper.Map<CartEntity>(cart);
+        var existingCart = db.GetCollection<CartEntity>(CollectionName)
+            .Include(t => t.CartItems)
+            .FindOne(x => x.Id == cartId);
 
-       var entities = db.GetCollection<CartEntity>(CollectionName);
-       entities.Insert(entity);
-       
-       return Task.CompletedTask;
+        var existingItem = existingCart?.CartItems?.FirstOrDefault(p => p.Id == cartItemId);
+
+        return Task.FromResult(_mapper.Map<CartItem>(existingItem));
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken)
+    public Task CreateCartAsync(string cartId, CancellationToken cancellationToken)
     {
         using var db = new LiteDatabase(_configuration["Database"]);
+        var entity = new CartEntity()
+        {
+            Id = cartId
+        };
+
         var entities = db.GetCollection<CartEntity>(CollectionName);
+        entities.Insert(entity);
+       
+        return Task.CompletedTask;
+    }
 
-        entities.DeleteMany(t => t.CartId == id);
+    public Task CreateCartItemAsync(CartItem cartItem, CancellationToken cancellationToken)
+    {
+        using var db = new LiteDatabase(_configuration["Database"]);
+
+        var existingCart = db.GetCollection<CartEntity>(CollectionName)
+            .Include(t => t.CartItems)
+            .FindOne(x => x.Id == cartItem.CartId);
+        
+        var cartItemEntity = _mapper.Map<CartItemEntity>(cartItem);
+
+        if (existingCart.CartItems == null)
+            existingCart.CartItems = new List<CartItemEntity>();
+
+        existingCart.CartItems.Add(cartItemEntity);
+
+        db.GetCollection<CartEntity>(CollectionName).Update(existingCart);
+
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(string cartId, int cartItemId, CancellationToken cancellationToken)
+    {
+        using var db = new LiteDatabase(_configuration["Database"]);
+
+        var existingCart = db.GetCollection<CartEntity>(CollectionName)
+            .Include(t => t.CartItems)
+            .FindOne(x => x.Id == cartId);
+
+        existingCart.CartItems.RemoveAll(p => p.Id == cartItemId);
+
+        db.GetCollection<CartEntity>(CollectionName).Update(existingCart);
 
         return Task.CompletedTask;
     }

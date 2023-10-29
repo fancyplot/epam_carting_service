@@ -8,6 +8,6 @@ public class AutoMapperProfileDomain : Profile
 {
     public AutoMapperProfileDomain()
     {
-        CreateMap<CreateCartCommand, Cart>();
+        CreateMap<CreateCartCommand, CartItem>();
     }
 }

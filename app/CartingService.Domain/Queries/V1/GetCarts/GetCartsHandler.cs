@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CartingService.Domain.Queries.V1.GetCarts;
 
-public class GetCartsHandler : IRequestHandler<GetCartsQuery, IEnumerable<Cart>>
+public class GetCartsHandler : IRequestHandler<GetCartsQuery, Cart>
 {
     private readonly ICartsRepository _cartsRepository;
 
@@ -13,8 +13,8 @@ public class GetCartsHandler : IRequestHandler<GetCartsQuery, IEnumerable<Cart>>
         _cartsRepository = cartsRepository ?? throw new ArgumentNullException(nameof(cartsRepository));
     }
 
-    public async Task<IEnumerable<Cart>> Handle(GetCartsQuery request, CancellationToken cancellationToken)
+    public async Task<Cart> Handle(GetCartsQuery request, CancellationToken cancellationToken)
     {
-        return await _cartsRepository.GetAllAsync(cancellationToken);
+        return await _cartsRepository.GetCartAsync(request.CartId, cancellationToken);
     }
 }

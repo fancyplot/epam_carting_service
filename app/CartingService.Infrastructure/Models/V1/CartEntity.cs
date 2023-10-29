@@ -1,10 +1,9 @@
-﻿namespace CartingService.Infrastructure.Models.V1;
+﻿using CartingService.Domain.Models.V1;
+
+namespace CartingService.Infrastructure.Models.V1;
 
 public class CartEntity
 {
-    public int CartId { get; set; }
-    public string Name { get; set; }
-    public string Image { get; set; }
-    public decimal Price { get; set; }
-    public int Quantity { get; set; }
+    public string Id { get; set; }
+    public List<CartItemEntity> CartItems { get; set; }
 }

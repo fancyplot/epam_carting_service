@@ -5,7 +5,7 @@ using MediatR;
 
 namespace CartingService.Domain.Commands.V1.CreateCart;
 
-public class CreateCartHandler : IRequestHandler<CreateCartCommand, Cart>
+public class CreateCartHandler : IRequestHandler<CreateCartCommand, CartItem>
 {
     private readonly ICartsRepository _cartsRepository;
     private readonly IMapper _mapper;
@@ -16,20 +16,29 @@ public class CreateCartHandler : IRequestHandler<CreateCartCommand, Cart>
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
     
-    public async Task<Cart> Handle(CreateCartCommand request, CancellationToken cancellationToken)
+    public async Task<CartItem> Handle(CreateCartCommand request, CancellationToken cancellationToken)
     {
-        var cart = _mapper.Map<Cart>(request);
-        var existingCart = await _cartsRepository.GetAsync(request.Id, cancellationToken);
-        if (existingCart != null)
-            throw new ArgumentException($"Cart with id {request.Id} already exists");
+        var existingCart = await _cartsRepository.GetCartAsync(request.CartId, cancellationToken);
+        if (existingCart == null)
+            await _cartsRepository.CreateCartAsync(request.CartId, cancellationToken);
 
-        await _cartsRepository.CreateAsync(cart, cancellationToken);
+        existingCart = await _cartsRepository.GetCartAsync(request.CartId, cancellationToken);
+        if (existingCart == null)
+            throw new Exception($"Cart with id {request.CartId} was not created");
 
-        var createdCart = await _cartsRepository.GetAsync(request.Id, cancellationToken);
+        var existingCartItem = await _cartsRepository.GetCartItemAsync(request.CartId, request.Id, cancellationToken);
+        if (existingCartItem != null)
+            throw new ArgumentException($"Cart item with id {request.Id} already exists in cart {request.CartId}");
 
-        if (createdCart == null)
-            throw new Exception($"Cart with id {request.Id} was not created");
+        var cartItem = _mapper.Map<CartItem>(request);
 
-        return createdCart;
+        await _cartsRepository.CreateCartItemAsync(cartItem, cancellationToken);
+
+        var createdCartItem = await _cartsRepository.GetCartItemAsync(request.CartId, request.Id, cancellationToken);
+
+        if (createdCartItem == null)
+            throw new Exception($"Cart item with id {request.Id} was not created");
+
+        return createdCartItem;
     }
 }

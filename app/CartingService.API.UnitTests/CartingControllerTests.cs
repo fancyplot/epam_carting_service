@@ -163,7 +163,7 @@ namespace CartingService.API.UnitTests
             var mockMediator = new Mock<IMediator>();
             mockMediator.Setup(
                 t => t.Send(
-                    It.Is<DeleteCartCommand>(q => true),
+                    It.Is<DeleteCartItemCommand>(q => true),
                     It.Is<CancellationToken>(q => true)));
 
             var controller = new CartingController(mockMediator.Object, mockMapper.Object);
@@ -187,7 +187,7 @@ namespace CartingService.API.UnitTests
             var mockMediator = new Mock<IMediator>();
             mockMediator.Setup(
                     t => t.Send(
-                        It.Is<DeleteCartCommand>(q => true),
+                        It.Is<DeleteCartItemCommand>(q => true),
                         It.Is<CancellationToken>(q => true)))
                 .Throws(new KeyNotFoundException(exception));
 

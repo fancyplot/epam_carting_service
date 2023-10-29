@@ -8,9 +8,9 @@ public class AutoMapperProfileInfrastructure : Profile
 {
     public AutoMapperProfileInfrastructure()
     {
-        CreateMap<CartEntity, Cart>()
-            .ForMember(t => t.Id, opt => opt.MapFrom(src => src.CartId));
-        CreateMap<Cart, CartEntity>()
-            .ForMember(t => t.CartId, opt => opt.MapFrom(src => src.Id));
+        CreateMap<CartEntity, Cart>();
+        CreateMap<Cart, CartEntity>();
+        CreateMap<CartItemEntity, CartItem>();
+        CreateMap<CartItem, CartItemEntity>();
     }
 }

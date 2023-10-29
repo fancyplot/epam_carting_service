@@ -3,7 +3,7 @@ using MediatR;
 
 namespace CartingService.Domain.Queries.V1.GetCarts;
 
-public class GetCartsQuery : IRequest<IEnumerable<Cart>>
+public class GetCartsQuery : IRequest<Cart>
 {
-
+    public string CartId { get; set; }
 }

@@ -6,9 +6,13 @@ public interface ICartsRepository
 {
     Task<IEnumerable<Cart>> GetAllAsync(CancellationToken cancellationToken);
 
-    Task<Cart> GetAsync(int cartId, CancellationToken cancellationToken);
+    Task<Cart> GetCartAsync(string cartId, CancellationToken cancellationToken);
 
-    Task CreateAsync(Cart cart, CancellationToken cancellationToken);
+    Task<CartItem> GetCartItemAsync(string cartId, int cartItemId, CancellationToken cancellationToken);
 
-    Task DeleteAsync(int id, CancellationToken cancellationToken);
+    Task CreateCartAsync(string cartId, CancellationToken cancellationToken);
+
+    Task CreateCartItemAsync(CartItem cartItem, CancellationToken cancellationToken);
+
+    Task DeleteAsync(string cartId, int cartItemId, CancellationToken cancellationToken);
 }
