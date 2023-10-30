@@ -12,5 +12,7 @@ public class AutoMapperProfileInfrastructure : Profile
         CreateMap<Cart, CartEntity>();
         CreateMap<CartItemEntity, CartItem>();
         CreateMap<CartItem, CartItemEntity>();
+        CreateMap<Models.V2.CartItemEntity, Domain.Models.V2.CartItem>();
+        CreateMap<Domain.Models.V2.CartItem, Models.V2.CartItemEntity>();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CartingService.Domain.Commands.V1.CreateCart;
 using CartingService.Domain.Commands.V1.DeleteCart;
-using CartingService.Domain.Models.V1;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CartingService.API.Controllers.V1;

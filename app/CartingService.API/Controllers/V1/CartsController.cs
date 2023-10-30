@@ -1,9 +1,11 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CartingService.API.Controllers.V1
 {
+    [ApiVersion(1.0)]
     [Route("v1/[controller]")]
     [ApiController]
     public partial class CartsController : ControllerBase
