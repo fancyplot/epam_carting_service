@@ -49,6 +49,18 @@ public class CartsRepository : ICartsRepository
         return Task.FromResult(_mapper.Map<CartItem>(existingItem));
     }
 
+    public Task<IEnumerable<Cart>> GetCartItemsAsync(int cartItemId, CancellationToken cancellationToken)
+    {
+        using var db = new LiteDatabase(_configuration["Database"]);
+        var existingCarts = db.GetCollection<CartEntity>(CollectionName)
+            .Include(t => t.CartItems)
+            .FindAll();
+
+        var items = existingCarts.Where(t => t.CartItems.Any(p => p.Id == cartItemId));
+
+        return Task.FromResult(_mapper.Map<IEnumerable<Cart>>(items));
+    }
+
     public Task CreateCartAsync(string cartId, CancellationToken cancellationToken)
     {
         using var db = new LiteDatabase(_configuration["Database"]);
@@ -92,6 +104,31 @@ public class CartsRepository : ICartsRepository
             .FindOne(x => x.Id == cartId);
 
         existingCart.CartItems.RemoveAll(p => p.Id == cartItemId);
+
+        db.GetCollection<CartEntity>(CollectionName).Update(existingCart);
+
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateCartItemAsync(string cartId, int id, string? image, string? name, decimal? price, CancellationToken cancellationToken)
+    {
+        using var db = new LiteDatabase(_configuration["Database"]);
+
+        var existingCart = db.GetCollection<CartEntity>(CollectionName)
+            .Include(t => t.CartItems)
+            .FindOne(x => x.Id == cartId);
+
+        var existingItem = existingCart.CartItems
+            .FirstOrDefault(t => t.CartId == cartId && t.Id == id);
+
+        if (image != null)
+            existingItem.Image = image;
+
+        if(name != null)
+            existingItem.Name = name;
+
+        if (price != null)
+            existingItem.Price = (decimal)price;
 
         db.GetCollection<CartEntity>(CollectionName).Update(existingCart);
 

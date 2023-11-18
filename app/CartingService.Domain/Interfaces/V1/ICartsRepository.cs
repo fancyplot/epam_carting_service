@@ -15,4 +15,8 @@ public interface ICartsRepository
     Task CreateCartItemAsync(CartItem cartItem, CancellationToken cancellationToken);
 
     Task DeleteAsync(string cartId, int cartItemId, CancellationToken cancellationToken);
+
+    Task<IEnumerable<Cart>> GetCartItemsAsync(int cartItemId, CancellationToken cancellationToken);
+
+    Task UpdateCartItemAsync(string cartId, int id, string? image, string? name, decimal? price, CancellationToken cancellationToken);
 }

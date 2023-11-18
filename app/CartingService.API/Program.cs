@@ -3,7 +3,9 @@ using CartingService.Domain.AutoMapper;
 using CartingService.Domain.Interfaces.V1;
 using CartingService.Domain.Models.V1;
 using CartingService.Infrastructure.AutoMapper;
+using CartingService.Infrastructure.MessageBroker;
 using CartingService.Infrastructure.Repositories.V1;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,16 @@ builder.Services.AddApiVersioning(opt =>
     opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
         new HeaderApiVersionReader("x-api-version"),
         new MediaTypeApiVersionReader("x-api-version"));
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<ProductConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
 });
 
 var app = builder.Build();
