@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CartingService.API.Controllers.V2;
@@ -8,6 +9,7 @@ namespace CartingService.API.Controllers.V2;
 [ApiVersion(2.0)]
 [Route("v2/[controller]")]
 [ApiController]
+[Authorize]
 public partial class CartsController : ControllerBase
 {
     private readonly IMediator _mediator;
